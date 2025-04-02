@@ -145,28 +145,35 @@ class Prices{
         return last_prices
     }
     
-    compute_new_prices(new_sales, indexes, default_prices){
-        let last_non_krach_party_index = indexes.last_non_krach_party_index()
-        let milliseconds_since_last_update = Date.now() - last_non_krach_party_index[0]
+    compute_new_prices(new_sales, indexes, default_prices) {
+        let last_non_krach_party_index = indexes.last_non_krach_party_index();
+        let milliseconds_since_last_update = Date.now() - last_non_krach_party_index[0];
         
-        let former_prices = this.last_non_krach(indexes)
+        let former_prices = this.last_non_krach(indexes);
 
-        let price_var = this.price_variation(new_sales, former_prices, milliseconds_since_last_update)
-    
-        let new_prices = {}
-        for(let drink in this.prices_history){
-            let min_price = 0
-            if("min_price" in default_prices[drink]){
-                min_price = default_prices[drink]["min_price"]
+        let price_var = this.price_variation(new_sales, former_prices, milliseconds_since_last_update);
+
+        let new_prices = {};
+        for (let drink in this.prices_history) {
+            let min_price = 0;
+            if ("min_price" in default_prices[drink]) {
+                min_price = default_prices[drink]["min_price"];
             }
-            
-            new_prices[drink] = round(Math.max(
-                                    (former_prices[drink]
-                                    * (1 + price_var[drink] / 100))
-                                    , min_price
-                                ), 2)
+
+            let max_price = 5; // Hardcoded maximum price
+
+            new_prices[drink] = round(
+                Math.min(
+                    Math.max(
+                        former_prices[drink] * (1 + price_var[drink] / 100),
+                        min_price
+                    ),
+                    max_price // Enforce the maximum price
+                ),
+                2
+            );
         }
-    
-        return new_prices
+
+        return new_prices;
     }
 }
