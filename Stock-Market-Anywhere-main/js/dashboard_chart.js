@@ -1,4 +1,5 @@
 const ctx = document.getElementById('chart').getContext('2d');
+const curves_to_display = 23; // Set the number of drinks to display
 
 const config = {
   type: 'line',
